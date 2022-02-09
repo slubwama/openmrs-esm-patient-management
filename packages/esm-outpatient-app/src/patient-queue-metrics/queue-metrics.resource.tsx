@@ -89,7 +89,7 @@ export function useActiveVisits() {
   const formattedActiveVisits = data?.data?.results.length ? data.data.results.map(mapVisitProperties) : [];
 
   return {
-    data: activeVisitLists,
+    activeVisits: activeVisitLists,
     isLoading: !data && !error,
     isError: error,
     isValidating,

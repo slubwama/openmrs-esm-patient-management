@@ -18,17 +18,19 @@ import {
   Tile,
   OverflowMenu,
   OverflowMenuItem,
+  TableExpandedRow,
 } from 'carbon-components-react';
+import Add16 from '@carbon/icons-react/es/add/16';
+import ChartPie16 from '@carbon/icons-react/es/chart--pie/16';
 import { useLayoutType, useConfig, ConfigurableLink } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
-import styles from './active-visits-list-table.scss';
 import { ActiveVisit, useActiveVisits } from '../patient-queue-metrics/queue-metrics.resource';
-import Add16 from '@carbon/icons-react/es/add/16';
+import styles from './active-visits-list-table.scss';
 
 const ActiveVisitsListTable: React.FC = () => {
   const { t } = useTranslation();
   const layout = useLayoutType();
-  const { data: activeVisits, isError, isLoading, isValidating } = useActiveVisits();
+  const { activeVisits, isError, isLoading, isValidating } = useActiveVisits();
   const desktopView = layout === 'desktop';
 
   const headerData = useMemo(
@@ -57,6 +59,33 @@ const ActiveVisitsListTable: React.FC = () => {
     [t],
   );
 
+  const getTagType = (priority: string) => {
+    switch (priority) {
+      case 'Emergency':
+        return 'red';
+      case 'Not urgent':
+        return 'green';
+      default:
+        return 'gray';
+    }
+  };
+
+  const tableRows = useMemo(() => {
+    return activeVisits?.map((visit) => ({
+      ...visit,
+      priority: {
+        content: (
+          <Tag className={visit.priority === 'Priority' && styles.priorityTag} type={getTagType(visit?.priority)}>
+            {visit.priority}
+          </Tag>
+        ),
+      },
+      name: {
+        content: <ConfigurableLink to={`\${openmrsSpaBase}/patient/chart`}>{visit.name}</ConfigurableLink>,
+      },
+    }));
+  }, [activeVisits]);
+
   if (isLoading) {
     return <DataTableSkeleton role="progressbar" />;
   }
@@ -64,7 +93,7 @@ const ActiveVisitsListTable: React.FC = () => {
     return (
       <div className={styles.activeVisitsListContainer}>
         <div className={styles.activeVisitsListHeaderContainer}>
-          <label className={styles.productiveHeading03}>{t('activeVisits', 'Active visits')}</label>
+          <label className={styles.heading}>{t('activeVisits', 'Active visits')}</label>
           <div className={styles.switcherContainer}>
             <label className={styles.contentSwitcherLabel}>{t('view', 'View:')} </label>
             <ContentSwitcher onChange={() => {}} style={{ marginLeft: '1rem' }}>
@@ -80,16 +109,21 @@ const ActiveVisitsListTable: React.FC = () => {
             {t('addPatientList', 'Add patient to list')}
           </Button>
         </div>
-        <DataTable rows={activeVisits} headers={headerData} isSortable>
-          {({ rows, headers, getHeaderProps, getTableProps, getBatchActionProps, getRowProps }) => (
+        <DataTable rows={tableRows} headers={headerData} isSortable>
+          {({ rows, headers, getHeaderProps, getTableProps, getRowProps }) => (
             <TableContainer title="" className={styles.tableContainer}>
-              <Table className={styles.activeVisitsTable} {...getTableProps()} size={desktopView ? 'short' : 'normal'}>
+              <Table
+                className={styles.activeVisitsTable}
+                {...getTableProps()}
+                size={desktopView ? 'sm' : 'normal'}
+                overflowMenuOnHover={false}>
                 <TableHead>
                   <TableRow>
                     <TableExpandHeader />
                     {headers.map((header) => (
                       <TableHeader {...getHeaderProps({ header })}>{header.header}</TableHeader>
                     ))}
+                    <TableExpandHeader />
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -97,39 +131,24 @@ const ActiveVisitsListTable: React.FC = () => {
                     <React.Fragment key={index}>
                       <TableExpandRow {...getRowProps({ row })}>
                         {row.cells.map((cell) => (
-                          <TableCell key={cell.id}>
-                            {cell.info.header === 'priority' && cell.value === 'Emergency' ? (
-                              <Tag className={styles.tag} type="magenta">
-                                {cell.value}
-                              </Tag>
-                            ) : cell.info.header === 'priority' && cell.value === 'Not urgent' ? (
-                              <Tag className={styles.tag} type="green">
-                                {cell.value}
-                              </Tag>
-                            ) : cell.info.header === 'priority' && cell.value === 'Priority' ? (
-                              <Tag className={styles.priorityTag}>{cell.value}</Tag>
-                            ) : cell.info.header === 'name' ? (
-                              <ConfigurableLink to={`\${openmrsSpaBase}/patient/chart/`}>{cell.value}</ConfigurableLink>
-                            ) : cell.info.header === 'waitTime' ? (
-                              <>
-                                <div className={styles.tableOverflowmenu}>
-                                  {cell.value}
-                                  <OverflowMenu>
-                                    <OverflowMenuItem itemText={''} />
-                                  </OverflowMenu>
-                                </div>
-                              </>
-                            ) : (
-                              cell.value
-                            )}
-                          </TableCell>
+                          <TableCell key={cell.id}>{cell.value?.content ?? cell.value}</TableCell>
                         ))}
+                        <TableCell className="bx--table-column-menu">
+                          <OverflowMenu size="sm" flipped>
+                            <OverflowMenuItem itemText={t('endVisit', 'End visit')}>
+                              {t('endVisit', 'End visit')}
+                            </OverflowMenuItem>
+                            <OverflowMenuItem hasDivider isDelete itemText={t('resetWaitTime', 'Reset wait time')}>
+                              {t('resetWaitTime', 'Reset wait time')}
+                            </OverflowMenuItem>
+                          </OverflowMenu>
+                        </TableCell>
                       </TableExpandRow>
-                      {row.isExpanded && (
-                        <TableRow className={styles.expandedActiveVisitRow}>
-                          <th colSpan={headers.length + 2}></th>
-                        </TableRow>
-                      )}
+                      {row.isExpanded ? (
+                        <TableExpandedRow
+                          className={styles.expandedActiveVisitRow}
+                          colSpan={headers.length + 2}></TableExpandedRow>
+                      ) : null}
                     </React.Fragment>
                   ))}
                 </TableBody>
@@ -142,12 +161,24 @@ const ActiveVisitsListTable: React.FC = () => {
   }
   return (
     <div className={styles.activeVisitsListContainer}>
-      <Tile light className={styles.tile}>
-        <div className={styles.productiveHeading03}>
-          <h4>{t('activeVisits', 'Active Visits')}</h4>
-        </div>
-        <p className={styles.content}>{t('noPatientToDisplay', 'No patient to display')}</p>
-      </Tile>
+      <div className={styles.activeVisitsListHeaderContainer}>
+        <label className={styles.heading}>{t('activeVisits', 'Active visits')}</label>
+        <Button
+          size="small"
+          kind="secondary"
+          renderIcon={Add16}
+          iconDescription={t('addPatientList', 'Add patient to list')}>
+          {t('addPatientList', 'Add patient to list')}
+        </Button>
+      </div>
+      <div className={styles.tileContainer}>
+        <Tile className={styles.tile}>
+          <p className={styles.content}>{t('noPatientsToDisplay', 'No patients to display')}</p>
+          <Button kind="ghost" size="small" renderIcon={Add16}>
+            {t('addPatientToList', 'Add patient to list')}
+          </Button>
+        </Tile>
+      </div>
     </div>
   );
 };

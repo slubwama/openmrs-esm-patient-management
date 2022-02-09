@@ -17,6 +17,11 @@
   margin: 1rem;
 }
 
+.heading {
+  @include carbon--type-style('productive-heading-03');
+  color: $text-01;
+}
+
 .switcherContainer {
   display: flex;
   align-items: center;
@@ -35,14 +40,10 @@
   @include carbon--type-style("label-01");
    color: #943d00;
    background-color: #ffc9a3;
-   height: $spacing-06;
-   margin: 0.188rem 1.25rem 0 0.5rem;
 }
 
 .tag {
   @include carbon--type-style("label-01");
-   height: $spacing-06;
-   margin: 0.188rem 1.25rem 0 0.5rem;
 }
 
 .tableOverflowmenu {
@@ -73,10 +74,6 @@
   margin: 0 1rem;
 }
 
-.tableContainer section{
-  position: relative;
-}
-
 .tableContainer a {
   text-decoration: none;
 }
@@ -91,7 +88,7 @@
   background-color: #ffffff;
 }
 
-.activeVisitsTable  tbody  tr[data-parent-row]:nth-child(even)  td {
+.activeVisitsTable tbody tr[data-parent-row]:nth-child(even) td {
   background-color: #f4f4f4;
 }
 
@@ -107,12 +104,21 @@
   padding: 0 1rem;
 }
 
+.tileContainer {
+  background-color: $ui-02;
+  border-top: 1px solid $ui-03;
+  padding: 5rem 0;
+}
+
+.tile {
+  margin: auto;
+  width: fit-content;
+}
+
 .content {
   @include carbon--type-style("productive-heading-01");
   color: $text-02;
-  margin-top: $spacing-05;
-  margin-bottom: $spacing-03;
-  background-color: $ui-background;
+  margin-bottom: 0.5rem;
 }
 
 .desktopHeading {
@@ -142,9 +148,3 @@
     border-bottom: 0.375rem solid $brand-teal-01;
   }
 }
-
-.tile {
-  text-align: center;
-  border: 1px solid $ui-03;
-}
-

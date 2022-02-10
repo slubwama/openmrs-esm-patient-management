@@ -26,12 +26,14 @@ import { useLayoutType, ConfigurableLink } from '@openmrs/esm-framework';
 import { useTranslation } from 'react-i18next';
 import { ActiveVisit, useActiveVisits } from '../patient-queue-metrics/queue-metrics.resource';
 import styles from './active-visits-list-table.scss';
+import PatientSearchLaunch from '../patient-search/patient-search.component';
 
 const ActiveVisitsListTable: React.FC = () => {
   const { t } = useTranslation();
   const layout = useLayoutType();
   const { activeVisits, isError, isLoading, isValidating } = useActiveVisits();
   const desktopView = layout === 'desktop';
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const headerData = useMemo(
     () => [
@@ -104,6 +106,7 @@ const ActiveVisitsListTable: React.FC = () => {
             size="small"
             kind="secondary"
             renderIcon={Add16}
+            onClick={() => setShowOverlay(true)}
             iconDescription={t('addPatientList', 'Add patient to list')}>
             {t('addPatientList', 'Add patient to list')}
           </Button>
@@ -151,6 +154,7 @@ const ActiveVisitsListTable: React.FC = () => {
             </TableContainer>
           )}
         </DataTable>
+        {showOverlay && <PatientSearchLaunch close={() => setShowOverlay(false)} />}
       </div>
     );
   }
@@ -162,6 +166,7 @@ const ActiveVisitsListTable: React.FC = () => {
           size="small"
           kind="secondary"
           renderIcon={Add16}
+          onClick={() => setShowOverlay(true)}
           iconDescription={t('addPatientToList', 'Add patient to list')}>
           {t('addPatientList', 'Add patient to list')}
         </Button>
@@ -174,6 +179,7 @@ const ActiveVisitsListTable: React.FC = () => {
           </Button>
         </Tile>
       </div>
+      {showOverlay && <PatientSearchLaunch close={() => setShowOverlay(false)} />}
     </div>
   );
 };

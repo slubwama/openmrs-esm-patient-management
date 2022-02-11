@@ -1,0 +1,89 @@
+@import "~@openmrs/esm-styleguide/src/vars";
+@import "~carbon-components/src/globals/scss/vars";
+@import "~carbon-components/src/globals/scss/mixins";
+
+.patientSearchInput input:focus {
+  outline: none;
+}
+
+// desktop mode styling
+:global(.omrs-breakpoint-gt-tablet) .searchArea {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+}
+
+// tablet mode styling
+:global(.omrs-breakpoint-lt-desktop) .searchArea {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  outline: 2px solid #ff832b; // Add this color to the style-guide
+  margin: 0.125rem;
+}
+
+.searchButton {
+  background-color: $ui-05;
+  color: $ui-02;
+}
+
+.searchBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: $spacing-08 $spacing-06 0 $spacing-06;
+}
+
+.searchContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  margin: $spacing-02;
+}
+
+.searchPatientText {
+  margin-top: $spacing-05;
+  color: $text-02;
+  @include carbon--type-style("productive-heading-01");
+}
+
+.bodyLong01 {
+  @include carbon--type-style("body-long-01");
+  color: $text-02;
+}
+
+
+.advanceSearchButton {
+  margin-top: $spacing-08;
+  display: flex;
+  justify-content: center;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-top: $spacing-09;
+  padding: 0 20%;
+  @include carbon--type-style("productive-heading-03");
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  margin-top: $spacing-02;
+  border-bottom: 0.0625rem solid $text-03;
+}
+
+.separator:not(:empty)::before {
+  margin-right: $spacing-05
+}
+
+.separator:not(:empty)::after {
+  margin-left: $spacing-05
+}

@@ -3,7 +3,7 @@
 .desktopOverlay {
   position: absolute;
   top: $spacing-09;
-  height: calc(100vh + 14rem);
+  height: calc(100vh + 5rem);
   width: 37rem;
   right: 0;
   bottom: 0;
@@ -31,9 +31,6 @@
 }
 
 .tabletOverlayHeader {
-  button {
-    background-color: $brand-01 !important;
-  }
   .headerContent {
     color: $ui-02;
   }
@@ -58,6 +55,5 @@
 }
 
 .overlayContent {
-  padding: $spacing-05;
   overflow-y: auto;
 }

@@ -1,0 +1,27 @@
+@import "~@openmrs/esm-styleguide/src/vars";
+@import "~carbon-components/src/globals/scss/vars";
+@import "~carbon-components/src/globals/scss/mixins";
+
+.headerGlobalBarButton {
+    @include brand-01(background-color);
+}
+
+.startVisitButton {
+    width: 15rem;
+}
+
+.patientContainer {
+    display: flex;
+    align-items: center;
+    color: $ui-02;
+
+    .patientName {
+        @include carbon--type-style("productive-heading-01");
+    }
+
+    .patientInfo {
+        color: #ccd9d9;
+        @include carbon--type-style("body-short-01");
+        padding-left: $spacing-02;
+    }
+}

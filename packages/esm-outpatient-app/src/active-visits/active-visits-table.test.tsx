@@ -18,6 +18,14 @@ jest.mock('./active-visits-table.resource.ts', () => {
   };
 });
 
+jest.mock('@openmrs/esm-framework', () => {
+  const originalModule = jest.requireActual('@openmrs/esm-framework');
+  return {
+    ...originalModule,
+    openmrsFetch: jest.fn(),
+  };
+});
+
 describe('ActiveVisitsTable: ', () => {
   beforeEach(() =>
     mockedUseConfig.mockReturnValue({
